@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PW Ad Exchange Studio</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='11' fill='%230d6b59'/%3E%3Cpath d='M9 15h18l-5-5M31 25H13l5 5' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#f5f4f0;--sf:#fff;--sf2:#faf9f6;--ink:#1b1f1d;--mu:#6b706a;--ln:#e5e3dc;--ac:#0d6b59;--ac2:#e2f0eb;--ac3:#0a5546;--gd:#b5761a;--gd2:#faf0db;--rd:#a8392e;--rd2:#f8e6e2;--bl:#2f5d8a;--bl2:#e4edf6;--pu:#6b4aa0;--pu2:#efe9f8;--sh:0 1px 2px rgba(20,30,25,.05),0 6px 20px rgba(20,30,25,.05);--sans:"Inter","Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Roboto,Arial,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1412;--sf:#171e1b;--sf2:#1c2420;--ink:#e8ede9;--mu:#98a39c;--ln:#2a3530;--ac:#3fbf9f;--ac2:#163229;--ac3:#6fd9bd;--gd:#e5a64d;--gd2:#33270f;--rd:#ef8c80;--rd2:#3a1d19;--bl:#8db6e0;--bl2:#16263a;--pu:#bba0e6;--pu2:#2a2040;--sh:none}}
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:var(--sans);font-size:14.5px;line-height:1.55;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:20;background:var(--sf);border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:20px;padding:10px 28px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+.tabs{display:flex;gap:4px}.tabs button{border:0;background:none;font:inherit;font-weight:600;color:var(--mu);padding:8px 14px;border-radius:9px;cursor:pointer}.tabs button.on{background:var(--ac2);color:var(--ac)}
+.sp{flex:1}.chip{border:1px solid var(--ln);background:var(--sf2);color:var(--ink);font:inherit;font-size:13px;padding:7px 12px;border-radius:99px;cursor:pointer;white-space:nowrap}.chip:hover{border-color:var(--ac)}
+main{max-width:1020px;margin:0 auto;padding:28px 22px 80px}
+.view{display:none}.view.on{display:block}
+h1{font-size:26px;letter-spacing:-.02em;margin:0 0 6px}.lead{color:var(--mu);margin:0 0 22px;font-size:15px;max-width:680px}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:var(--sh)}
+.card>h2{margin:0 0 12px;font-size:16px;letter-spacing:-.01em;display:flex;gap:10px;align-items:center}
+.num{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--ac);color:#fff;font-size:13px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+label.l{display:block;font-size:11.5px;font-weight:700;color:var(--mu);margin-bottom:5px;text-transform:uppercase;letter-spacing:.07em}
+label.l em{font-style:normal;font-weight:500;text-transform:none;letter-spacing:0}
+select,input[type=text],input[type=number],input[type=date],textarea{width:100%;padding:10px 11px;border:1px solid var(--ln);border-radius:9px;background:var(--sf2);color:var(--ink);font:inherit;outline:none}
+textarea{min-height:60px;font-family:var(--mono);font-size:12.5px}
+select:focus,input:focus,textarea:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac2)}
+.err{border-color:var(--rd)!important}.hint{color:var(--mu);font-size:12.5px;margin:5px 0 0}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:11px 20px;font:inherit;font-weight:650;cursor:pointer}.btn:hover{background:var(--ac3)}.btn.lg{padding:14px 28px;font-size:15.5px}
+.btn.sec{background:var(--ac2);color:var(--ac)}.btn.ghost{background:none;border:1px solid var(--ln);color:var(--ink)}.btn.sm{padding:6px 12px;font-size:13px}.btn.dng{background:var(--rd2);color:var(--rd)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.moreBtn{display:flex;align-items:center;gap:9px;border:1px dashed var(--ln);background:var(--sf2);border-radius:11px;padding:10px 14px;width:100%;font:inherit;font-weight:600;color:var(--ink);cursor:pointer;margin-top:16px;text-align:left}
+.moreBtn:hover{border-color:var(--ac)}.moreBtn .badge{background:var(--ac);color:#fff;border-radius:99px;font-size:11.5px;padding:1px 8px;display:none}.moreBtn .car{margin-left:auto;color:var(--mu);transition:transform .2s}.moreBtn.open .car{transform:rotate(180deg)}
+.morePanel{display:none;padding:6px 2px 0}.morePanel.open{display:block}
+.sec3{padding:14px 0 6px;border-bottom:1px solid var(--ln)}.sec3:last-child{border:0}.sec3 h3{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--mu)}
+.checks{display:flex;flex-wrap:wrap;gap:8px}.ck{display:flex;align-items:center;gap:7px;border:1px solid var(--ln);background:var(--sf2);padding:6px 11px;border-radius:99px;font-size:13px;cursor:pointer;user-select:none}
+.ck input{accent-color:var(--ac)}.ck:has(input:checked){border-color:var(--ac);background:var(--ac2);color:var(--ac3)}
+.sig{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}.sig span{background:var(--bl2);color:var(--bl);font-size:12.5px;font-weight:650;padding:4px 11px;border-radius:99px}
+.fun{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px;align-items:center}.fun .st{font-size:12px;font-weight:700;padding:5px 11px;border-radius:8px;background:var(--ac2);color:var(--ac3)}.fun .ar{color:var(--mu)}
+.seg{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--ln)}.seg:last-child{border:0}
+.seg .no{flex:none;width:30px;height:30px;border-radius:9px;background:var(--ac);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px}
+.seg.off .no{background:var(--mu)}.seg.off{opacity:.55}
+.seg .bd{flex:1;min-width:0}.seg .hd{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}.seg .hd b{font-size:15px}
+.cnt{margin-left:auto;font-weight:700;font-size:15px}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:99px;background:var(--bl2);color:var(--bl);letter-spacing:.02em}
+.tag.g{background:var(--gd2);color:var(--gd)}.tag.p{background:var(--pu2);color:var(--pu)}.tag.r{background:var(--rd2);color:var(--rd)}
+.iex{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.iex div{border-radius:10px;padding:8px 11px;font-size:13px}.iex .i{background:var(--ac2)}.iex .e{background:var(--rd2)}
+.iex b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}.iex .i b{color:var(--ac3)}.iex .e b{color:var(--rd)}
+.bar{height:5px;border-radius:9px;background:var(--ln);margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac)}
+.gx{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gx>div{border-radius:12px;padding:12px 14px}.gx .ge{background:var(--rd2)}.gx .go{background:var(--pu2)}
+.gx h4{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.08em}.gx .ge h4{color:var(--rd)}.gx .go h4{color:var(--pu)}
+.gx ul{margin:0;padding:0;list-style:none;font-size:13px}.gx li{padding:3px 0;display:flex;gap:8px}.gx li .n{margin-left:auto;font-weight:700}.gx .ge li:before{content:"✕";color:var(--rd);font-weight:800}.gx .go li:before{content:"+";color:var(--pu);font-weight:800}
+pre.sql{font-family:var(--mono);font-size:12.2px;line-height:1.5;background:#14201c;color:#d8e8e0;padding:14px;border-radius:12px;overflow:auto;max-height:420px;margin:10px 0 0;white-space:pre}
+details.sq{margin-top:10px}details.sq summary{cursor:pointer;font-weight:600;color:var(--ac);font-size:13px}
+.sg{display:inline-flex;background:var(--sf2);border:1px solid var(--ln);border-radius:10px;padding:3px;gap:2px;flex-wrap:wrap}
+.sg button{border:0;background:none;font:inherit;font-weight:600;padding:7px 13px;border-radius:8px;cursor:pointer;color:var(--mu);font-size:13px}.sg button.on{background:var(--sf);color:var(--ac);box-shadow:var(--sh)}
+.strip{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;margin:2px 0 14px}
+.sb{border-radius:11px;padding:8px 12px;background:var(--ac2);color:var(--ac3);font-size:12.5px;font-weight:650;line-height:1.3}.sb small{display:block;font-weight:500;color:var(--mu)}
+.sb.rd{background:var(--rd2);color:var(--rd)}.sb.gd{background:var(--gd2);color:var(--gd)}.ar2{align-self:center;color:var(--mu)}.sp2{display:flex;flex-direction:column;gap:6px;justify-content:center}
+.trk{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin:22px 0 4px}.trk small{display:block;text-transform:none;letter-spacing:0;font-weight:500;color:var(--mu);font-size:13px;margin-top:2px}
+.js{border:1px solid var(--ln);border-radius:13px;padding:14px 16px;background:var(--sf);margin-bottom:10px}
+.jh{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.day{background:var(--ac);color:#fff;font-weight:700;font-size:12px;padding:3px 10px;border-radius:99px}.js.b1 .day{background:var(--gd)}.js.b2 .day{background:var(--rd)}
+.ph{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--mu);font-weight:700}
+.dl{display:grid;grid-template-columns:96px 1fr;gap:5px 12px;margin:0;font-size:13.5px}.dl dt{color:var(--mu);font-weight:650;font-size:12px;text-transform:uppercase;letter-spacing:.05em;padding-top:2px}.dl dd{margin:0}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:10px}.split .js{margin:0}
+.lab{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin:4px 0 6px;color:var(--mu)}
+table{width:100%;border-collapse:collapse;font-size:13px}th{background:var(--sf2);text-align:left;padding:8px 10px;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--mu);border-bottom:1px solid var(--ln);white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid var(--ln);vertical-align:top}tr:last-child td{border:0}.tbl{overflow:auto;border:1px solid var(--ln);border-radius:12px}
+.pa{font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--mu);margin:16px 0 6px}
+.plan{display:grid;grid-template-columns:270px 1fr;gap:18px;align-items:start}
+.pl{border:1px solid var(--ln);border-radius:12px;padding:12px 14px;margin-bottom:9px;cursor:pointer;background:var(--sf)}.pl.on{border-color:var(--ac);background:var(--ac2)}.pl b{display:block;font-size:13.5px}.pl small{color:var(--mu)}
+.bar2{height:6px;border-radius:9px;background:var(--ln);margin-top:8px;overflow:hidden}.bar2 i{display:block;height:100%;background:var(--ac)}
+.inl{padding:5px 8px;font-size:12.5px;width:auto}.hide{display:none!important}
+code{font-family:var(--mono);font-size:12px;background:rgba(13,107,89,.1);color:var(--ac3);padding:1px 5px;border-radius:5px}
+details.pb{border:1px solid var(--ln);border-radius:12px;background:var(--sf2);margin-top:8px}details.pb summary{cursor:pointer;padding:11px 14px;font-weight:650}details.pb .in{padding:0 14px 12px}
+.ev3{display:grid;grid-template-columns:24px 1.5fr 2.4fr 1fr 1fr;gap:8px;align-items:center;margin-bottom:6px;font-size:13px}.ev3 b{font-family:var(--mono);font-size:12px}
+.note{border-radius:11px;padding:10px 14px;background:var(--gd2);font-size:13.5px;margin:10px 0}
+@media(max-width:820px){.plan{grid-template-columns:1fr}.iex,.split,.gx{grid-template-columns:1fr}.top{flex-wrap:wrap;padding:10px 14px;gap:10px}main{padding:18px 14px 70px}.dl{grid-template-columns:1fr}.dl dt{padding-top:6px}.ev3{grid-template-columns:24px 1fr}}
+@media print{.top,.btn,.moreBtn,.plan>div:first-child,.noprint{display:none!important}.plan{display:block}body{background:#fff}.card{box-shadow:none}}
+</style>
+</head>
+<body>
+<header class="top">
+ <div class="brand"><svg width="30" height="30" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#0d6b59"/><path d="M9 15h18l-5-5M31 25H13l5 5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>PW Ad Exchange Studio</div>
+ <nav class="tabs" id="tabs"><button data-v="build" class="on">Build</button><button data-v="plan">My plans</button></nav>
+ <div class="sp"></div><button class="chip" id="dsBtn">Data map</button>
+</header>
+<main>
+<div class="card hide" id="dsPanel"><div class="row" style="justify-content:space-between"><b>Data map (saved in this browser)</b><button class="btn sm ghost" id="dsClose">Close</button></div>
+ <p class="hint">Defaults come from the Table Names tab of your master doc. Change a table name or switch an event off if it does not exist in your warehouse.</p>
+ <div class="grid" id="dsGrid" style="margin:12px 0"></div>
+ <div class="lab">Events the tool reads</div><div class="ev3" style="font-weight:700;color:var(--mu);font-size:11px;text-transform:uppercase"><span></span><span>Event</span><span>Table</span><span>Batch param</span><span>Cohort param</span></div><div id="dsEv"></div>
+ <details class="pb" open><summary>Getting an error? Run this check first</summary><div class="in">
+  <p class="hint">It counts rows in each table for the last day and shows the type of user_id and event time. If Metabase says a table is not found, untick that event above and rebuild. If with_batch_id is 0, that table has no batch_id parameter: untick it too.</p><pre class="sql" id="scA"></pre>
+  <div class="row" style="margin-top:6px"><button class="btn sm" id="cpA">Copy check query</button><button class="btn sm ghost" id="resetDS">Reset Data map</button></div><p class="hint" id="scMsg"></p></div></details>
+</div>
+
+<section class="view on" id="v-build">
+ <h1>Build a segment for your campaign</h1>
+ <p class="lead">Click Build. The tool scans the full PW funnel, picks the best audience to campaign to right now, and gives you one SQL query for it. Add product details only if you want the audience for one specific product.</p>
+ <div class="card"><h2><span class="num">1</span>Build</h2>
+  <div><label class="l">Product details <em>(optional)</em></label><textarea id="b_target" style="min-height:56px" placeholder="Leave empty: the tool finds the best audience across all PW products.&#10;Or add batch names, keywords or batch IDs, e.g. Arjuna JEE 2027, 6786a55364f63b712b48b61a"></textarea>
+  <p class="hint" id="modeHint">Auto mode: best audience across all PW products, each user matched to the batch they are most interested in.</p></div>
+  <div class="grid" style="margin-top:14px"><div><label class="l">Campaign start date</label><input type="date" id="b_start"></div></div>
+  <button class="moreBtn" id="moreBtn" type="button"><span>Customise (optional): choose the target yourself</span><span class="badge" id="badge">0</span><span class="car">▾</span></button>
+  <div class="morePanel" id="morePanel">
+   <div class="sec3"><h3>Choose the target</h3><div class="grid"><div><label class="l">Cohort <em>(adds explorers and idle sign-ups)</em></label><select id="b_cohort" data-def=""></select></div></div>
+    <div style="margin-top:12px"><label class="l">Segments in the mix</label><div class="checks" id="segChecks"></div><p class="hint">Segments 8 to 10 need product details or a cohort.</p></div></div>
+   <div class="sec3"><h3>What the tool looks at</h3><div class="grid">
+    <div><label class="l">Recent window <em>(days)</em></label><input type="number" id="a_win" data-def="14" value="14" min="2" max="90"></div>
+    <div><label class="l">History <em>(days)</em></label><input type="number" id="a_hist" data-def="60" value="60" min="30" max="365"></div>
+    <div><label class="l">Cross-category: min lift</label><input type="number" id="a_lift" data-def="2" value="2" min="1" step="0.5"></div>
+    <div><label class="l">Cross-category: min buyers</label><input type="number" id="a_sup" data-def="20" value="20" min="3"></div>
+    <div><label class="l">Cohort name in events <em>(if different)</em></label><input type="text" id="a_ckw" data-def="" placeholder="e.g. jee"></div></div></div>
+   <div class="sec3"><h3>Limits and filters</h3><div class="grid">
+    <div><label class="l">Max users per segment</label><input type="number" id="a_per" data-def="" min="1" placeholder="No limit"></div>
+    <div><label class="l">Max users in total</label><input type="number" id="a_cap" data-def="" min="1" placeholder="No limit"></div>
+    <div><label class="l">Contact required</label><select id="a_contact" data-def="1"><option value="1">Phone or email on file</option><option value="0">Not required</option></select></div>
+    <div><label class="l">Extra columns <em>(from users table)</em></label><input type="text" id="a_out" data-def="" placeholder="e.g. state, city"></div></div>
+    <div style="margin-top:12px"><label class="l">Your own SQL condition <em>(columns: segment_rank, eligibility, intent, name, email, phone_number)</em></label><textarea id="a_custom" data-def="" placeholder="e.g. dwell_target > 120"></textarea></div></div>
+   <div class="sec3"><h3>Channels you can use</h3><div class="checks" id="chans"></div></div>
+  </div>
+  <div class="row" style="margin-top:18px"><button class="btn lg" id="buildBtn">Build segment</button><span class="hint" id="reqHint"></span></div>
+ </div>
+ <div id="result"></div>
+</section>
+
+<section class="view" id="v-plan">
+ <div class="row" style="justify-content:space-between"><div><h1>My plans</h1><p class="lead" style="margin:0">Saved campaigns with dates, status and results.</p></div>
+  <div class="row noprint"><button class="btn sm ghost" id="pExp">Export</button><label class="btn sm ghost" style="cursor:pointer">Import<input type="file" id="pImp" accept=".json" class="hide"></label></div></div>
+ <div id="pBody" style="margin-top:18px"></div>
+</section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const pdate=s=>new Date(s+'T00:00:00');
+const addDays=(s,n)=>{const d=pdate(s);d.setDate(d.getDate()+n);return iso(d)};
+const fmtD=s=>pdate(s).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
+const fmtN=n=>Math.round(n).toLocaleString('en-IN');
+const MEM={};
+const store={get(k,d){try{const v=localStorage.getItem(k);if(v)return JSON.parse(v)}catch(e){}return k in MEM?MEM[k]:d},set(k,v){MEM[k]=v;try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+/* FUNNEL MAP: events and tables from the master doc (Table Names tab). Table pattern pw_bq.silver_dbt_<name> */
+const EVD={
+ form_visible:{kind:'int',stage:'Intent',w:3.5,batch:'batch_id',filter:{form_type:'lead_gen_form'},on:1,label:'Lead form shown'},
+ batch_description_page:{kind:'int',stage:'Interest',w:3,batch:'batch_id',on:1,label:'Batch page viewed (app)'},
+ pw_batch_desc_page:{kind:'int',stage:'Interest',w:3,batch:'batch_id',on:1,label:'Batch page viewed (web)'},
+ buy_now_clicked:{kind:'int',stage:'Intent',w:4,batch:'batch_id',on:1,label:'Buy Now clicked'},
+ order_summary_details:{kind:'int',stage:'Intent',w:5,batch:'batch_id',on:1,label:'Payment page reached (app)'},
+ pw_order_summary_page:{kind:'int',stage:'Intent',w:5,batch:'batch_id',on:1,label:'Payment page reached (web)'},
+ transaction_failed:{kind:'int',stage:'Failed payment',w:6,batch:'batch_id',on:1,label:'Payment failed'},
+ batch_banner_click:{kind:'int',stage:'Explore',w:2,batch:'batch_id',on:1,label:'Batch banner clicked'},
+ batch_click:{kind:'int',stage:'Explore',w:1.5,batch:'batch_id',on:1,label:'Batch card clicked'},
+ enroll_now_click:{kind:'int',stage:'Intent',w:4,batch:'batch_id',on:0,label:'Enroll Now clicked'},
+ library_visit:{kind:'int',stage:'Explore',w:1.5,batch:'',cohort:'cohort_name',cohortOnly:1,on:1,label:'Library explored'},
+ test_series_page:{kind:'int',stage:'Explore',w:1.5,batch:'',cohort:'cohort_name',cohortOnly:1,on:1,label:'Test series explored'},
+ transaction_success_paid:{kind:'buy',stage:'Paid',batch:'batch_id',on:1,label:'Paid purchase'},
+ free_batch_enroll_success:{kind:'free',stage:'Free',batch:'batch_id',on:1,label:'Free-batch enrolment'},
+ all_notification_clicked:{kind:'click',stage:'Campaign',batch:'',on:1,label:'Notification clicked'},
+ popup_click:{kind:'click',stage:'Campaign',batch:'',on:1,label:'In-app popup clicked'},
+ banner_click:{kind:'click',stage:'Campaign',batch:'',on:1,label:'Banner clicked'}
+};
+const COHORTS=[['IIT_JEE','IIT JEE','jee'],['NEET','NEET UG','neet'],['NEET_PG_INI_CET','NEET PG / INI-CET','neet pg'],['UPSC','UPSC','upsc'],['PW_ONLY_IAS','PW Only IAS','ias'],['GATE','GATE','gate'],['CA','CA','ca '],['CS','CS','cs '],['CLAT','CLAT','clat'],['CUET_UG','CUET UG','cuet'],['CUET_PG','CUET PG','cuet pg'],['IIT_JAM','IIT JAM','jam'],['CSIR_NET','CSIR NET','csir'],['UGC_NET','UGC NET','ugc'],['NDA','NDA','nda'],['SSC','SSC','ssc'],['Banking','Banking','bank'],['Railway','Railway','railway'],['Judiciary','Judiciary','judiciary'],['BPSC','BPSC','bpsc'],['UPPSC','UPPSC','uppsc'],['MPPSC','MPPSC','mppsc'],['MPSC','MPSC','mpsc'],['RPSC','RPSC','rpsc'],['OPSC','OPSC','opsc'],['WBPSC','WBPSC','wbpsc'],['TET','TET','tet'],['Bihar_Exams','Bihar exams','bihar'],['UP_Exams','UP exams','up '],['WB_Exams','WB exams','wb '],['HARYANA_EXAMS','Haryana exams','haryana'],['IPMAT','IPMAT','ipmat'],['NIMCET','NIMCET','nimcet'],['MBA','MBA','mba'],['MBA_GMAT','MBA / GMAT','gmat'],['IELTS','IELTS','ielts'],['TOEFL','TOEFL','toefl'],['FMGE','FMGE','fmge'],['MBBS_PROF','MBBS professional','mbbs'],['MBBS_CONSULTING','MBBS consulting','mbbs'],['Nursing_Exams','Nursing exams','nursing'],['PARAMEDICAL','Paramedical','paramedical'],['PHARMA','Pharma','pharma'],['OLYMPIAD','Olympiad','olympiad'],['SCHOOL_CURRICULUM','School curriculum','school'],['SCHOOL_PREPARATION','School preparation','school'],['ONLINE_DEGREES','Online degrees','degree'],['IIT_ONLINE_DEGREE','IIT online degree','iit'],['IIM_ONLINE_DEGREE','IIM online degree','iim'],['skills','Skills','skill'],['Humanities','Humanities','humanities'],['COMMERCE','Commerce','commerce'],['DESIGN','Design','design'],['ARCHITECTURE','Architecture','architecture'],['AGRICULTURE','Agriculture','agri']];
+const SEG={
+ 1:{label:'Payment failed',stage:'Failed payment',track:'fast',inc:'Had a failed payment on a batch in the recent window.',exc:'Anyone who bought that batch since; users with no phone or email.',touch:'Immediate: WhatsApp, push and in-app modal with a one-tap retry.'},
+ 2:{label:'Reached payment',stage:'Intent',track:'fast',inc:'Reached the payment page or clicked Buy Now on a batch, and did not pay.',exc:'Failed-payment users (segment 1); anyone who bought that batch.',touch:'Immediate: payment help and seat or offer reminder.'},
+ 3:{label:'Lead-form raisers',stage:'Intent',track:'fast',inc:'Saw or opened the lead-gen form for a batch, and did not reach payment.',exc:'Segments 1 and 2; anyone who bought that batch.',touch:'Immediate: counsellor call plus WhatsApp.'},
+ 4:{label:'Repeat viewers',stage:'Interest',track:'std',inc:'Never paid on PW. Viewed a batch page 2+ times, or came back on 2+ days.',exc:'Segments 1 to 3; paid learners (they are segment 7); anyone who bought that batch.',touch:'Day 0 awareness, then engage on Day 3.'},
+ 5:{label:'Single-visit viewers',stage:'Interest',track:'std',inc:'Never paid on PW. Viewed a batch page once, or clicked its banner or card.',exc:'Segments 1 to 4; paid learners; anyone who bought that batch.',touch:'Day 0 awareness, then engage on Day 3.'},
+ 6:{label:'Free to paid',stage:'Free learner',track:'std',inc:'Enrolled in a free batch recently and has never paid. The batch shown is the free batch they joined.',exc:'Segments 1 to 5; anyone who paid on PW.',touch:'Show what the paid batch adds. Use free-batch video ads and the Study page.'},
+ 7:{label:'Paid learners, new interest',stage:'Cross-sell',track:'std',inc:'Has paid for a batch before and now shows interest in another batch (cross-category). With product details: also learners who paid for batches related to the product.',exc:'Segments 1 to 3; anyone who bought the batch they now look at.',touch:'Cross-sell as the natural next step. Use FBT and Explore recommendations.'},
+ 8:{label:'Cross-category browsers',stage:'Cross-sell',track:'std',inc:'Needs product details. Active on batches whose buyers behave like buyers of the product (learned from past data), with no touch on the product.',exc:'Segments 1 to 7; anyone who bought the product.',touch:'Introduce the product through recommendations and teacher promotion.'},
+ 9:{label:'Cohort explorers',stage:'Explore',track:'nurt',inc:'Needs a cohort. Explored the cohort (library or test series) in the window, with no batch interest.',exc:'Segments 1 to 8; anyone who bought.',touch:'Guide them to the right batch. Free demo or masterclass first.'},
+ 10:{label:'Idle sign-ups',stage:'Sign-up',track:'nurt',inc:'Needs a cohort. Signed up in the cohort in the window, with no tracked activity at all.',exc:'Anyone with activity; anyone who bought.',touch:'Discovery: free class, free series, top batches for the exam.'}
+};
+const EXL={bought:'Already bought the batch (paid)',contact:'No phone or email on file',off:'Segment switched off in Customise',nosig:'Active users with no batch interest'};
+const OUTSIDE=[['YouTube viewers','Viewers by video type (Shorts or long format; academic, non-academic, playlist, teacher) and by recency (30, 60, 90 days).','Build as remarketing lists in YouTube and Google Ads. Exclude buyers by uploading the paid list.'],['Website visitors','Visitors of the cohort page and blog pages for the exam.','Build as audiences in your ad platforms and web analytics. Exclude logged-in buyers.'],['Prioritised dynamic audience','The SQL result of this tool, re-run on a schedule so the audience stays current.','Upload the hashed phone or email list as a custom audience. Refresh weekly.']];
+
+/* DB CONFIG */
+const DB0={evPattern:'pw_bq.silver_dbt_{event}',evUser:'user_id',evTime:'event_datetime',evParams:'event_params',users:'cdp_revenue.gold_users',uId:'_id',uName:'firstname',uEmail:'email',uPhone:'primarynumber',batches:'cdp_revenue.gold_batches',bId:'_id',bName:'name'};
+const DS_FIELDS=[['evPattern','Event table pattern'],['evUser','Event user id column'],['evTime','Event time column'],['evParams','Event params column'],['users','Users table'],['uId','Users: id column'],['uName','Users: name column'],['uEmail','Users: email column'],['uPhone','Users: phone column'],['batches','Batches table'],['bId','Batches: id column'],['bName','Batches: name column']];
+function defEvents(p){return Object.assign({},...Object.keys(EVD).map(k=>({[k]:{on:EVD[k].on,table:p.replace('{event}',k),batch:EVD[k].batch,cohort:EVD[k].cohort||''}})))}
+let DB=Object.assign({},DB0,store.get('pwax_db6',{}));DB.events=Object.assign(defEvents(DB.evPattern),DB.events||{});
+const tableOf=(db,k)=>db.events[k].table||db.evPattern.replace('{event}',k);
+const activeKeys=(db,kind)=>Object.keys(EVD).filter(k=>EVD[k].kind===kind&&db.events[k].on);
+
+/* DIALECT: Trino / Athena (what Metabase talks to) */
+const D={ago:d=>`CURRENT_TIMESTAMP - INTERVAL '${d}' DAY`,ts:s=>`TIMESTAMP '${s}'`,param:(col,k)=>`element_at(${col}, '${k}').string_value`,
+ ageDays:c=>`(to_unixtime(CURRENT_TIMESTAMP) - to_unixtime(${c})) / 86400.0`,diffSec:(a,b)=>`(to_unixtime(${b}) - to_unixtime(${a}))`,dateOf:c=>`CAST(${c} AS DATE)`,nullStr:'CAST(NULL AS VARCHAR)',nullNum:'CAST(NULL AS DOUBLE)',
+ pow:(a,b)=>`POWER(${a}, ${b})`,log10:x=>`LOG10(${x})`,ln:x=>`LN(${x})`};
+const lit=s=>String(s).replace(/\\/g,'').replace(/'/g,"''");
+const csvList=s=>String(s||'').split(',').map(x=>x.trim()).filter(Boolean);
+
+/* SQL: one query for the audience mix. No semicolons, no comments with quotes, no DDL: safe for Metabase. */
+function parseTargets(txt){const toks=String(txt||'').split(/[\n,]+/).map(x=>x.trim()).filter(Boolean);return{ids:toks.filter(t=>/^[0-9a-f]{24}$/i.test(t)),kws:toks.filter(t=>!/^[0-9a-f]{24}$/i.test(t))}}
+const isManual=c=>{const t=parseTargets(c.target);return t.ids.length>0||t.kws.length>0};
+function evSelect(db,key,hist,extraWhere,withCohort){
+ const e=db.events[key],bp=e.batch?D.param(db.evParams,e.batch):D.nullStr;
+ const w=[`${db.evTime} >= ${D.ago(hist)}`,`${db.evUser} IS NOT NULL`];
+ if(EVD[key].filter)Object.entries(EVD[key].filter).forEach(([k,v])=>w.push(`${D.param(db.evParams,k)} = '${lit(v)}'`));
+ if(extraWhere)w.push(extraWhere);
+ const cv=withCohort?`, ${e.cohort?D.param(db.evParams,e.cohort):D.nullStr} AS cohort_val`:'';
+ return `SELECT ${db.evUser} AS user_id, '${key}' AS event, ${db.evTime} AS event_datetime, ${bp} AS batch_id${cv}\n    FROM ${tableOf(db,key)}\n    WHERE ${w.join('\n      AND ')}`}
+const cohortInfo=c=>COHORTS.find(x=>x[0]===c.cohort);
+const cohortKw=c=>{const ci=cohortInfo(c);return (c.ckw||(ci?ci[2]:'')||'').toLowerCase().trim()};
+const signupTable=(db,c)=>c.cohort?db.evPattern.replace('{event}','signup_success_'+c.cohort):'';
+const effSegs=c=>c.segs.filter(k=>!(k===8&&!isManual(c))).filter(k=>!(k>=9&&!c.cohort)).filter(k=>!(k===8&&!c.cross));
+const inList=a=>a.map(k=>`'${k}'`).join(', ');
+function buildCTEs(c,db){
+ const manual=isManual(c),W=c.days,half=(W/2).toFixed(1),hl=Math.max(W/3,1).toFixed(1),hist=Math.max(c.hist,W*2),L={},keys=[];
+ const ints=Object.keys(EVD).filter(k=>EVD[k].kind==='int'&&db.events[k].on&&(!EVD[k].cohortOnly||c.cohort));
+ const paid=activeKeys(db,'buy'),free=activeKeys(db,'free'),kw=cohortKw(c),dec=`POWER(0.5, age_days / ${hl})`;
+ const add=(k,v)=>{L[k]=v;keys.push(k)};
+ if(manual){const t=parseTargets(c.target),cd=[];
+  if(t.ids.length)cd.push(`b.${db.bId} IN (${t.ids.map(i=>`'${lit(i)}'`).join(', ')})`);
+  t.kws.forEach(k=>cd.push(`LOWER(b.${db.bName}) LIKE '%${lit(k).toLowerCase()}%'`));
+  add('tgt',`tgt AS (\n  /* the batches you are selling, found by ID or by name */\n  SELECT b.${db.bId} AS batch_id FROM ${db.batches} b\n  WHERE ${cd.join('\n     OR ')}\n)`)}
+ add('raw',`raw AS (\n  /* behaviour events across the funnel, one row per action */\n  ${ints.map(k=>evSelect(db,k,hist,null,true)).join('\n  UNION ALL\n  ')}\n)`);
+ add('seq',`seq AS (SELECT r.*, LEAD(r.event_datetime) OVER (PARTITION BY r.user_id ORDER BY r.event_datetime) AS next_time FROM raw r)`);
+ add('ev',`ev AS (\n  /* dwell_sec = estimated seconds spent on each action: the gap to the next action, 30 seconds if the user left */\n  SELECT user_id, event, event_datetime, batch_id, cohort_val,\n         ${D.ageDays('event_datetime')} AS age_days,\n         CASE WHEN next_time IS NULL THEN 0\n              WHEN ${D.diffSec('event_datetime','next_time')} <= 1800 THEN ${D.diffSec('event_datetime','next_time')}\n              ELSE 30 END AS dwell_sec\n  FROM seq\n)`);
+ add('purch',`purch AS (\n  /* paid purchases and free enrolments, last 365 days */\n  ${paid.concat(free).map(k=>evSelect(db,k,365)).join('\n  UNION ALL\n  ')}\n)`);
+ add('paidusers',`paidusers AS (SELECT DISTINCT user_id FROM purch WHERE event IN (${inList(paid)}))`);
+ add('paidpairs',`paidpairs AS (SELECT DISTINCT user_id, batch_id FROM purch WHERE event IN (${inList(paid)}) AND batch_id IS NOT NULL)`);
+ add('freeusers',manual?`freeusers AS (SELECT DISTINCT p.user_id FROM purch p JOIN tgt t ON t.batch_id = p.batch_id WHERE p.event IN (${inList(free)}) AND p.event_datetime >= ${D.ago(hist)})`:`freeusers AS (SELECT DISTINCT user_id FROM purch WHERE event IN (${inList(free)}) AND event_datetime >= ${D.ago(hist)})`);
+ add('freeb',manual?`freeb AS (\n  /* the free batch each free learner joined most recently */\n  SELECT user_id, batch_id FROM (\n    SELECT p.user_id, p.batch_id, ROW_NUMBER() OVER (PARTITION BY p.user_id ORDER BY p.event_datetime DESC) AS rn\n    FROM purch p JOIN tgt t ON t.batch_id = p.batch_id\n    WHERE p.event IN (${inList(free)}) AND p.event_datetime >= ${D.ago(hist)}\n  ) x WHERE rn = 1\n)`:`freeb AS (\n  /* the free batch each free learner joined most recently */\n  SELECT user_id, batch_id FROM (\n    SELECT user_id, batch_id, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY event_datetime DESC) AS rn\n    FROM purch\n    WHERE event IN (${inList(free)}) AND batch_id IS NOT NULL AND event_datetime >= ${D.ago(hist)}\n  ) x WHERE rn = 1\n)`);
+ if(manual){
+  add('buyers',`buyers AS (SELECT DISTINCT p.user_id FROM purch p JOIN tgt t ON t.batch_id = p.batch_id WHERE p.event IN (${inList(paid)}))`);
+  const off=c.cross?'':'\n    AND 1 = 0';
+  add('aff',`nb AS (SELECT COUNT(*) AS n FROM buyers),\nnu AS (SELECT COUNT(DISTINCT user_id) AS n FROM ev),\nbb AS (\n  /* other batches that buyers of your product also engaged with */\n  SELECT e.batch_id, COUNT(DISTINCT e.user_id) AS buyers_engaged\n  FROM ev e JOIN buyers bu ON bu.user_id = e.user_id LEFT JOIN tgt t ON t.batch_id = e.batch_id\n  WHERE e.batch_id IS NOT NULL AND t.batch_id IS NULL\n  GROUP BY e.batch_id\n),\nab AS (SELECT batch_id, COUNT(DISTINCT user_id) AS all_engaged FROM ev WHERE batch_id IS NOT NULL GROUP BY batch_id),\naffinity AS (\n  /* lift = how much more likely buyers are to engage with that batch than anyone else */\n  SELECT bb.batch_id, bb.buyers_engaged, ab.all_engaged,\n         (bb.buyers_engaged * 1.0 / nb.n) / (ab.all_engaged * 1.0 / nu.n) AS lift\n  FROM bb JOIN ab ON ab.batch_id = bb.batch_id CROSS JOIN nb CROSS JOIN nu\n  WHERE bb.buyers_engaged >= ${c.sup}\n    AND (bb.buyers_engaged * 1.0 / nb.n) / (ab.all_engaged * 1.0 / nu.n) >= ${c.lift}${off}\n)`);
+  add('xbuyers',`xbuyers AS (SELECT DISTINCT p.user_id FROM purch p JOIN affinity a ON a.batch_id = p.batch_id WHERE p.event IN (${inList(paid)}))`)}
+ else{add('buyers',`buyers AS (SELECT user_id FROM paidusers WHERE 1 = 0)`);add('xbuyers',`xbuyers AS (SELECT user_id FROM paidusers WHERE 1 = 0)`)}
+ const st=signupTable(db,c);
+ add('signups',st?`signups AS (SELECT DISTINCT ${db.evUser} AS user_id FROM ${st} WHERE ${db.evTime} >= ${D.ago(W)} AND ${db.evUser} IS NOT NULL)`:`signups AS (SELECT user_id FROM paidusers WHERE 1 = 0)`);
+ const wcase=`CASE e.event\n${ints.filter(k=>EVD[k].w>0).map(k=>`           WHEN '${k}' THEN ${EVD[k].w}`).join('\n')}\n           ELSE 0 END`;
+ const cohortFlag=kw?`CASE WHEN e.cohort_val IS NOT NULL AND LOWER(e.cohort_val) LIKE '%${lit(kw)}%' THEN 1 ELSE 0 END`:'0';
+ add('ev2',manual?`ev2 AS (\n  SELECT e.*, ${wcase} AS w,\n         CASE WHEN t.batch_id IS NOT NULL THEN 1 ELSE 0 END AS is_target,\n         ${cohortFlag} AS is_cohort,\n         a.lift AS lift\n  FROM ev e\n  LEFT JOIN tgt t ON t.batch_id = e.batch_id\n  LEFT JOIN affinity a ON a.batch_id = e.batch_id\n)`:`ev2 AS (\n  SELECT e.*, ${wcase} AS w,\n         CASE WHEN e.batch_id IS NOT NULL THEN 1 ELSE 0 END AS is_target,\n         ${cohortFlag} AS is_cohort,\n         ${D.nullNum} AS lift\n  FROM ev e\n)`);
+ const cnt=ks=>{const l=ks.filter(k=>ints.includes(k));return l.length?`SUM(CASE WHEN event IN (${inList(l)}) AND age_days <= ${W} THEN 1 ELSE 0 END)`:'0'};
+ add('ub',`ub AS (\n  /* one row per user and batch: the signals inside the recent window */\n  SELECT user_id, batch_id, MAX(is_target) AS is_target, MAX(lift) AS lift,\n         SUM(CASE WHEN age_days <= ${W} THEN w * ${dec} ELSE 0 END) AS intent,\n         COUNT(DISTINCT CASE WHEN age_days <= ${W} THEN ${D.dateOf('event_datetime')} END) AS active_days,\n         SUM(CASE WHEN age_days <= ${W} THEN dwell_sec ELSE 0 END) AS dwell_target,\n         SUM(CASE WHEN age_days <= ${half} THEN 1 ELSE 0 END) AS recent_cnt,\n         SUM(CASE WHEN age_days > ${half} AND age_days <= ${W} THEN 1 ELSE 0 END) AS prior_cnt,\n         ${cnt(['order_summary_details','pw_order_summary_page'])} AS pay_cnt,\n         ${cnt(['buy_now_clicked','enroll_now_click'])} AS buy_cnt,\n         ${cnt(['transaction_failed'])} AS fail_cnt,\n         ${cnt(['batch_description_page','pw_batch_desc_page'])} AS desc_cnt,\n         ${cnt(['form_visible'])} AS form_cnt,\n         MAX(CASE WHEN age_days <= ${W} THEN event_datetime END) AS last_signal\n  FROM ev2\n  WHERE batch_id IS NOT NULL AND (is_target = 1 OR lift IS NOT NULL)\n  GROUP BY user_id, batch_id\n)`);
+ add('anchor',`anchor AS (\n  /* each user is matched to the one batch they are most interested in */\n  SELECT * FROM (\n    SELECT u.*, ROW_NUMBER() OVER (PARTITION BY u.user_id ORDER BY u.is_target DESC, u.intent DESC, u.last_signal DESC) AS rk\n    FROM ub u WHERE u.intent > 0\n  ) x WHERE rk = 1\n)`);
+ add('ustat',`ustat AS (SELECT user_id, SUM(CASE WHEN age_days <= ${W} THEN dwell_sec ELSE 0 END) AS dwell_total, SUM(CASE WHEN is_cohort = 1 AND age_days <= ${W} THEN 1 ELSE 0 END) AS cohort_cnt FROM ev2 GROUP BY user_id)`);
+ add('pool',`pool AS (SELECT user_id FROM ustat UNION SELECT user_id FROM freeusers UNION SELECT user_id FROM xbuyers UNION SELECT user_id FROM signups)`);
+ add('cand',`cand AS (\n  SELECT p.user_id, COALESCE(a.batch_id, fb.batch_id) AS anchor_batch, COALESCE(a.is_target, 0) AS anchor_is_target,\n         COALESCE(a.intent, 0) AS intent,\n         CASE WHEN a.is_target = 0 AND a.lift IS NOT NULL THEN a.intent * ${D.ln('a.lift')} ELSE 0 END AS cross_score,\n         COALESCE(a.active_days, 0) AS active_days, COALESCE(a.dwell_target, 0) AS dwell_target,\n         COALESCE(a.recent_cnt, 0) AS recent_cnt, COALESCE(a.prior_cnt, 0) AS prior_cnt,\n         COALESCE(a.pay_cnt, 0) AS pay_cnt, COALESCE(a.buy_cnt, 0) AS buy_cnt, COALESCE(a.fail_cnt, 0) AS fail_cnt,\n         COALESCE(a.desc_cnt, 0) AS desc_cnt, COALESCE(a.form_cnt, 0) AS form_cnt, a.last_signal,\n         COALESCE(us.dwell_total, 0) AS dwell_total, COALESCE(us.cohort_cnt, 0) AS cohort_cnt,\n         CASE WHEN fu.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_free,\n         CASE WHEN pu.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_paid,\n         CASE WHEN xb.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_xbuyer,\n         CASE WHEN sg.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_signup,\n         CASE WHEN us.user_id IS NULL THEN 1 ELSE 0 END AS no_activity,\n         CASE WHEN pp.user_id IS NOT NULL OR bu.user_id IS NOT NULL THEN 1 ELSE 0 END AS bought_target\n  FROM pool p\n  LEFT JOIN anchor a ON a.user_id = p.user_id\n  LEFT JOIN ustat us ON us.user_id = p.user_id\n  LEFT JOIN freeusers fu ON fu.user_id = p.user_id\n  LEFT JOIN freeb fb ON fb.user_id = p.user_id\n  LEFT JOIN paidusers pu ON pu.user_id = p.user_id\n  LEFT JOIN xbuyers xb ON xb.user_id = p.user_id\n  LEFT JOIN signups sg ON sg.user_id = p.user_id\n  LEFT JOIN paidpairs pp ON pp.user_id = p.user_id AND pp.batch_id = COALESCE(a.batch_id, fb.batch_id)\n  LEFT JOIN buyers bu ON bu.user_id = p.user_id\n)`);
+ add('segd',`segd AS (\n  SELECT c.*,\n         /* the funnel segment: each user lands in the first one that fits, 1 is closest to buying */\n         CASE WHEN c.fail_cnt > 0 THEN 1\n              WHEN c.pay_cnt > 0 OR c.buy_cnt > 0 THEN 2\n              WHEN c.form_cnt > 0 THEN 3\n              WHEN c.is_paid = 0 AND c.anchor_is_target = 1 AND (c.desc_cnt >= 2 OR c.active_days >= 2) THEN 4\n              WHEN c.is_paid = 0 AND c.anchor_is_target = 1 AND c.intent > 0 THEN 5\n              WHEN c.is_free = 1 AND c.is_paid = 0 THEN 6\n              WHEN (c.is_paid = 1 AND c.anchor_is_target = 1 AND c.intent > 0) OR c.is_xbuyer = 1 THEN 7\n              WHEN c.anchor_is_target = 0 AND c.intent > 0 THEN 8\n              WHEN c.cohort_cnt > 0 THEN 9\n              WHEN c.is_signup = 1 AND c.no_activity = 1 THEN 10 END AS segment_rank\n  FROM cand c\n)`);
+ const oc=csvList(c.outcols),segs=effSegs(c),segOn=segs.length===10?'1 = 1':`segment_rank IN (${segs.join(', ')||0})`;
+ const mapCase=(col,f)=>`CASE ${col} ${Object.keys(SEG).map(k=>`WHEN ${k} THEN '${f(SEG[k])}'`).join(' ')} END`;
+ add('scored',`scored AS (\n  SELECT s.*,\n         ${mapCase('s.segment_rank',x=>x.label)} AS segment,\n         ${mapCase('s.segment_rank',x=>x.stage)} AS funnel_stage,\n         /* eligibility = intent depth + time spent + return days + trend + cross-category affinity + a small stage bonus */\n         s.intent\n           + 1.5 * ${D.log10('1 + s.dwell_target / 60.0')}\n           + 0.6 * s.active_days\n           + CASE WHEN s.recent_cnt > s.prior_cnt THEN 1.0 WHEN s.recent_cnt < s.prior_cnt THEN -0.5 ELSE 0 END\n           + 0.5 * s.cross_score + 0.5 * s.cohort_cnt\n           + 0.2 * ${D.log10('1 + s.dwell_total / 60.0')}\n           + CASE s.segment_rank WHEN 6 THEN 1.0 WHEN 7 THEN 0.8 WHEN 9 THEN 0.4 WHEN 10 THEN 0.2 ELSE 0 END AS eligibility,\n         u.${db.uName} AS name, u.${db.uEmail} AS email, u.${db.uPhone} AS phone_number${oc.map(o=>`,\n         u.${o} AS ${o}`).join('')},\n         CASE WHEN COALESCE(CAST(u.${db.uPhone} AS VARCHAR), '') = '' AND COALESCE(CAST(u.${db.uEmail} AS VARCHAR), '') = '' THEN 1 ELSE 0 END AS no_contact\n  FROM segd s\n  LEFT JOIN ${db.users} u ON u.${db.uId} = s.user_id\n)`);
+ const el=['bought_target = 0','segment_rank IS NOT NULL',segOn];if(c.contact)el.push('no_contact = 0');if(c.custom&&c.custom.trim())el.push(`(${c.custom.trim().replace(/;+\s*$/,'')})`);
+ L.eligibleWhere=el.filter(x=>x!=='1 = 1').join('\n    AND ');L.keys=keys;L.oc=oc;L.segs=segs;L.manual=manual;return L}
+const withList=(L)=>'WITH '+L.keys.map(k=>L[k]).join(',\n');
+function audienceParts(c,db){
+ const L=buildCTEs(c,db);
+ const eligible=`eligible AS (\n  SELECT s.*,\n         CASE WHEN PERCENT_RANK() OVER (PARTITION BY s.segment_rank ORDER BY s.eligibility DESC) < 0.25 THEN 'Hot'\n              WHEN PERCENT_RANK() OVER (PARTITION BY s.segment_rank ORDER BY s.eligibility DESC) < 0.65 THEN 'Warm'\n              ELSE 'Cool' END AS tier,\n         ROW_NUMBER() OVER (PARTITION BY s.segment_rank ORDER BY s.eligibility DESC) AS rn_seg\n  FROM scored s\n  WHERE ${L.eligibleWhere}\n)`;
+ const reasons=`CONCAT(CASE WHEN fail_cnt > 0 THEN 'payment failed; ' ELSE '' END, CASE WHEN pay_cnt > 0 THEN 'reached payment; ' ELSE '' END, CASE WHEN buy_cnt > 0 THEN 'clicked buy now; ' ELSE '' END, CASE WHEN form_cnt > 0 THEN 'lead form; ' ELSE '' END, CASE WHEN desc_cnt >= 2 THEN 'viewed batch repeatedly; ' ELSE '' END, CASE WHEN active_days >= 2 THEN 'returned on multiple days; ' ELSE '' END, CASE WHEN is_free = 1 AND is_paid = 0 THEN 'free-batch learner; ' ELSE '' END, CASE WHEN is_paid = 1 THEN 'has paid before; ' ELSE '' END, CASE WHEN is_xbuyer = 1 THEN 'paid in a related batch; ' ELSE '' END, CASE WHEN cross_score > 0 THEN 'active on related batches; ' ELSE '' END, CASE WHEN cohort_cnt > 0 AND intent = 0 THEN 'explored the cohort; ' ELSE '' END, CASE WHEN is_signup = 1 AND no_activity = 1 THEN 'new sign-up, no activity; ' ELSE '' END)`;
+ const persona=`CASE WHEN segment_rank <= 3 THEN 'Ready to buy' WHEN desc_cnt >= 3 OR dwell_target >= 600 THEN 'Deep researcher' WHEN segment_rank = 6 THEN 'Free learner' WHEN segment_rank = 7 THEN 'Paid learner, new interest' WHEN segment_rank = 8 THEN 'Cross-category explorer' WHEN segment_rank = 9 THEN 'Cohort explorer' WHEN segment_rank = 10 THEN 'New sign-up' ELSE 'Window shopper' END`;
+ const cols=[`e.user_id AS userid`,`e.name`,`e.email`,`e.phone_number`,`e.anchor_batch AS batchid`,`b.${db.bName} AS batchname`,`e.segment`,`e.segment_rank`,`e.funnel_stage`,`e.tier`,`ROUND(e.eligibility, 2) AS score`,`${persona} AS persona`,`CASE WHEN e.recent_cnt > e.prior_cnt THEN 'Rising' WHEN e.recent_cnt < e.prior_cnt THEN 'Cooling' ELSE 'Steady' END AS trend`,`ROUND(e.dwell_target / 60.0, 1) AS minutes_on_product`,`ROUND(e.dwell_total / 60.0, 1) AS minutes_in_app_est`,`e.last_signal AS last_signal_date`,`${reasons} AS why`,`CONCAT(e.segment, ' | ', COALESCE(b.${db.bName}, '')) AS campaign_segment`,...L.oc.map(o=>`e.${o}`)];
+ const sel=`SELECT ${cols.join(',\n       ')}\nFROM eligible e\nLEFT JOIN ${db.batches} b ON b.${db.bId} = e.anchor_batch${c.perSeg?`\nWHERE e.rn_seg <= ${c.perSeg}`:''}`;
+ const order=`ORDER BY e.segment_rank, e.eligibility DESC${c.cap?`\nLIMIT ${c.cap}`:''}`;
+ return{L,eligible,sel,order}}
+function audienceSQL(c,db,mode){
+ const P=audienceParts(c,db),L=P.L,off=L.segs.length<10;
+ if(mode==='breakdown')return `${withList(L)}\nSELECT kind, label, users FROM (\n  SELECT 'included' AS kind, segment AS label, COUNT(*) AS users FROM scored\n  WHERE ${L.eligibleWhere}\n  GROUP BY segment\n  UNION ALL SELECT 'excluded', '${EXL.bought}', COUNT(*) FROM scored WHERE bought_target = 1 AND segment_rank IS NOT NULL\n  UNION ALL SELECT 'excluded', '${EXL.contact}', COUNT(*) FROM scored WHERE bought_target = 0 AND segment_rank IS NOT NULL AND no_contact = 1\n${off?`  UNION ALL SELECT 'excluded', '${EXL.off}', COUNT(*) FROM scored WHERE bought_target = 0 AND segment_rank IS NOT NULL AND NOT (segment_rank IN (${L.segs.join(', ')||0}))\n`:''}  UNION ALL SELECT 'excluded', '${EXL.nosig}', COUNT(*) FROM scored WHERE segment_rank IS NULL\n) r\nORDER BY CASE kind WHEN 'included' THEN 1 ELSE 2 END, users DESC`;
+ if(mode==='products')return `${withList(L)},\n${P.eligible}\nSELECT b.${db.bName} AS batchname, e.segment, COUNT(*) AS users\nFROM eligible e\nLEFT JOIN ${db.batches} b ON b.${db.bId} = e.anchor_batch\nGROUP BY b.${db.bName}, e.segment\nORDER BY users DESC\nLIMIT 50`;
+ if(mode==='insights')return `${L.keys.filter(k=>['tgt','raw','seq','ev','purch','paidusers','paidpairs','freeusers','buyers','aff'].includes(k)).map((k,i)=>(i?'':'WITH ')+L[k]).join(',\n')}\nSELECT a.batch_id AS batchid, b.${db.bName} AS batchname, ROUND(a.lift, 2) AS lift, a.buyers_engaged, a.all_engaged AS users_engaged\nFROM affinity a\nLEFT JOIN ${db.batches} b ON b.${db.bId} = a.batch_id\nORDER BY a.lift * a.buyers_engaged DESC\nLIMIT 30`;
+ return `${withList(L)},\n${P.eligible}\n${P.sel}\n${P.order}`}
+function checkSQL(db){
+ const rows=Object.keys(EVD).filter(k=>db.events[k].on).map(k=>{const e=db.events[k];return `SELECT '${k}' AS tbl, COUNT(*) AS rows_1d, ${e.batch?`COUNT(${D.param(db.evParams,e.batch)})`:'0'} AS with_batch_id, MAX(typeof(${db.evUser})) AS user_id_type, MAX(typeof(${db.evTime})) AS time_type\nFROM ${tableOf(db,k)}\nWHERE ${db.evTime} >= ${D.ago(1)}`});
+ rows.push(`SELECT 'users table' AS tbl, COUNT(*) AS rows_1d, 0 AS with_batch_id, MAX(typeof(id)) AS user_id_type, '' AS time_type\nFROM (SELECT ${db.uId} AS id FROM ${db.users} LIMIT 100) x`);
+ rows.push(`SELECT 'batches table' AS tbl, COUNT(*) AS rows_1d, 0 AS with_batch_id, MAX(typeof(id)) AS user_id_type, '' AS time_type\nFROM (SELECT ${db.bId} AS id FROM ${db.batches} LIMIT 100) x`);
+ return rows.join('\nUNION ALL\n')}
+
+/* STEP LISTS: each one is a complete query (no saved table needed) */
+const TRACKS={fast:[1,2,3],std:[4,5,6,7,8],nurt:[9,10]};
+function stepSQL(c,db,id){
+ const P=audienceParts(c,db),L=P.L,start=D.ts(`${c.start} 00:00:00`),oc=csvList(c.outcols);
+ const paid=activeKeys(db,'buy'),clicks=activeKeys(db,'click');
+ const ints=['order_summary_details','pw_order_summary_page','buy_now_clicked','transaction_failed'].filter(k=>db.events[k].on);
+ const views=['batch_description_page','pw_batch_desc_page'].filter(k=>db.events[k].on);
+ const un=(keys)=>keys.map(k=>evSelect(db,k,365,`${db.evTime} >= ${start}`)).join('\n    UNION ALL\n    ');
+ const track=id[0]==='f'?'fast':id[0]==='s'?'std':'nurt',seg=`a.segment_rank IN (${TRACKS[track].join(', ')})`;
+ const need={clicked:/3[ab]$/.test(id)||/5$/.test(id),intent:/4$/.test(id)||/5$/.test(id),views:/5$/.test(id)};
+ const parts=[`aud AS (\n${P.sel}\n${P.order}\n)`,
+  `paid_since AS (SELECT DISTINCT p.user_id, p.batch_id FROM (\n    ${un(paid)}\n  ) p WHERE p.batch_id IS NOT NULL)`,
+  `bought AS (SELECT DISTINCT x.user_id FROM (SELECT ps.user_id FROM paid_since ps JOIN aud ax ON ax.userid = ps.user_id AND ps.batch_id = ax.batchid${L.manual?'\n    UNION ALL SELECT ps.user_id FROM paid_since ps JOIN tgt t ON t.batch_id = ps.batch_id':''}) x)`];
+ if(need.clicked&&clicks.length)parts.push(`clicked AS (SELECT DISTINCT k.user_id FROM (\n    ${un(clicks)}\n  ) k)`);
+ if(need.intent&&ints.length)parts.push(`intent AS (SELECT DISTINCT i.user_id FROM (\n    ${un(ints)}\n  ) i JOIN aud ax ON ax.userid = i.user_id AND i.batch_id = ax.batchid)`);
+ if(need.views&&views.length)parts.push(`views AS (SELECT DISTINCT v.user_id FROM (\n    ${un(views)}\n  ) v JOIN aud ax ON ax.userid = v.user_id AND v.batch_id = ax.batchid)`);
+ const joins=['bought'],where=[seg,'bought_j.user_id IS NULL'];
+ const addJ=n=>{joins.push(n)};
+ const hasC=clicks.length>0;
+ if(/3[ab]$/.test(id)){if(!hasC)return 'Enable the click tables in the Data map to split by click.';addJ('clicked');where.push(/3a$/.test(id)?'clicked_j.user_id IS NOT NULL':'clicked_j.user_id IS NULL')}
+ if(/4$/.test(id)){if(!ints.length)return 'Enable the payment events in the Data map.';addJ('intent');where.push('intent_j.user_id IS NOT NULL')}
+ if(/5$/.test(id)){const o=[];if(views.length){addJ('views');o.push('views_j.user_id IS NOT NULL')}if(hasC){addJ('clicked');o.push('clicked_j.user_id IS NOT NULL')}if(ints.length){addJ('intent');o.push('intent_j.user_id IS NOT NULL')}where.push('('+(o.join(' OR ')||'1 = 1')+')')}
+ const cols=['a.userid','a.name','a.email','a.phone_number','a.segment','a.batchname','a.tier',...oc.map(x=>`a.${x}`)].join(', ');
+ return `${withList(L)},\n${P.eligible},\n${parts.join(',\n')}\nSELECT ${cols}\nFROM aud a${joins.map(j=>`\nLEFT JOIN ${j} ${j}_j ON ${j}_j.user_id = a.userid`).join('')}\nWHERE ${where.join('\n  AND ')}\nORDER BY CASE a.tier WHEN 'Hot' THEN 1 WHEN 'Warm' THEN 2 ELSE 3 END`}
+
+/* PLACEMENTS (Activities tab) */
+const PLC=[
+ ['App','In-app fixed','ia_cohorts','Cohorts section','Pin the {c} tile first on the Cohorts shelf, linking to {t}.',[8,9,10,5],'aware','inapp'],
+ ['App','In-app fixed','ia_batchlist_pop','Batchlists: Popular section','Feature {t} in the Popular section of the {c} batch list.',[4,5,6,9,10],'engage','inapp'],
+ ['App','In-app fixed','ia_batchlist_oth','Batchlists: Other Categories','List {t} under Other Categories for users browsing batches outside {c}.',[7,8,9],'engage','inapp'],
+ ['App','In-app fixed','ia_hamburger','Hamburger menu','Add a persistent menu entry for {t} during the campaign.',[5,9,10],'aware','inapp'],
+ ['App','In-app fixed','ia_bottomnav','Bottom navigation','Highlight or badge a tab for {t}. Use only for the biggest campaign.',[1,2,4,5],'aware','inapp'],
+ ['App','In-app fixed','ia_explore','Explore PW','Add a themed card for {t}, shown to {c} explorers.',[8,9,10],'aware','inapp'],
+ ['App','In-app fixed','ia_study','Study page','Show a card for {t} under the learner current batch.',[6,7,8],'engage','inapp'],
+ ['App','In-app fixed','ia_fbt','FBT (frequently bought together)','Pair {t} with the batch the user is viewing or has bought.',[2,7,4],'convert','inapp'],
+ ['App','In-app fixed','ia_recs','Explore page: Recommended products','Rank {t} first in Recommended products for these segments.',[4,5,7,8,9],'engage','inapp'],
+ ['App','In-app dynamic','ia_modal','In-app modal','Show once on the next app open, deep-linked to the payment or batch page of {t}.',[1,2,3],'convert','inapp'],
+ ['App','In-app dynamic','ia_pip','PiP','Small floating card with one action to resume {t}.',[2,4],'engage','inapp'],
+ ['App','In-app dynamic','ia_banner','Event banners (home)','Rotate 2 or 3 creatives for {t}, targeted at these segments only.',[4,5,6,7,8,9],'engage','inapp'],
+ ['App','In-app dynamic','ia_whatsnew','What is New','Announce the {t} launch, masterclass or scholarship test.',[9,10],'aware','inapp'],
+ ['App','In-app dynamic','ia_freevideo','Free batch video ads','End card on free-batch videos pointing to {t}.',[6],'engage','inapp'],
+ ['App','In-app personalisation','ia_pers_bl','Batchlist personalisation block','Bind the block to these segments with {t} at position 1.',[1,2,3,4],'convert','inapp'],
+ ['App','In-app personalisation','ia_pers_loc','Location personalisation','Use city or state to show nearby centres or regional offers for {t}.',[9,10,5],'engage','inapp'],
+ ['Website','Website (pre sign-up)','web_cohorts','Cohorts page','Feature {t} on the {c} cohort page with a sign-up CTA.',[9,10,5],'aware','web'],
+ ['Website','Website (pre sign-up)','web_batchlist','Batchlisting: Other Categories','Add {t} under Other Categories for cross-category visitors.',[7,8],'engage','web'],
+ ['Website','Website (pre sign-up)','web_navbar','Navbar','Highlighted nav item for {t} during the campaign.',[9,10],'aware','web'],
+ ['Website','Website (pre sign-up)','web_pages','Dedicated page','One page for {t} with a single CTA and a UTM link.',[4,5,9],'convert','web'],
+ ['Website','Website (pre sign-up)','web_blog','Blog page CTAs','Insert CTAs for {t} inside the top {c} exam blogs.',[9,10,5],'aware','web'],
+ ['Paid media','Paid','paid_event','YouTube event video ads','Promote the {t} event or masterclass to YouTube viewer lists.',[9,10,4,5],'aware','paid'],
+ ['Paid media','Paid','paid_aware','Awareness video ads (YouTube, Meta)','Upload this audience as a custom list and run short videos for {t}.',[4,5,6,8,9,10],'aware','paid'],
+ ['Paid media','Paid','paid_perf','Performance ads (broad match on set audience)','Retarget the uploaded list across platforms, broad match on top.',[1,2,3,4,5,6,7],'close','paid'],
+ ['Teachers and social','Teacher promotion','t_pw','Teacher on other PW channels','A {t} teacher mentions it in a related PW channel video.',[8,9,10],'aware','teacher'],
+ ['Teachers and social','Teacher promotion','t_cat','Teacher on category channels','Teacher spot on the {c} category channel with the link.',[5,8,9],'engage','teacher'],
+ ['Teachers and social','Teacher promotion','t_personal','Teacher on personal channels','Short reel or post from the teacher with a UTM link.',[5,8,9,10],'engage','teacher'],
+ ['Teachers and social','Teacher promotion','t_batches','Teacher promoting inside batches','Ten-second mention in class plus a pinned link to {t}.',[6,7],'convert','teacher'],
+ ['Teachers and social','Social','telegram','Telegram','Post {t} with a UTM link and pin the message.',[5,9,10],'engage','social'],
+ ['Teachers and social','Social','instagram','Instagram','Reels, stories and link stickers for {t}.',[5,9,10],'aware','social'],
+ ['Calls and programs','Calls','call_couns','Counsellor calling','Call within 24 hours, share the payment link on WhatsApp after.',[1,2,3],'close','calls'],
+ ['Calls and programs','Calls','call_ai','AI calling','Qualify interest in {t}, then transfer or send the link.',[4,5,6,7,8,9],'convert','calls'],
+ ['Calls and programs','Calls','call_ivr','IVR','Short voice message for large lists, press 1 for a counsellor.',[5,8,9,10],'convert','calls'],
+ ['Calls and programs','Programs','scholar','Scholarship test','Invite to a scholarship test; link the result to a coupon for {t}.',[4,5,9,10],'engage','prog'],
+ ['Calls and programs','Programs','master','Masterclass','Invite to a {c} masterclass, then follow up with the replay and offer.',[5,8,9,10],'engage','prog'],
+ ['Calls and programs','Programs','freeseries','Free series','Enrol in a free {c} series, then move to {t}.',[9,10],'engage','prog'],
+ ['Calls and programs','Programs','oneonone','1-on-1 counselling','Offer a booking slot to high-intent users.',[1,2,3],'close','prog'],
+ ['Offline','Ecom','ecom_books','Promotions printed on books','Print a QR with a UTM link for {t}.',[8,9],'aware','offline'],
+ ['Offline','Ecom','ecom_leaflet','Leaflet or goodies in the delivery basket','Insert a leaflet with a QR and offer code for {t}.',[7,8],'engage','offline']
+].map(a=>({asset:a[0],group:a[1],id:a[2],surface:a[3],detail:a[4],segs:a[5],phase:a[6],ch:a[7]}));
+const PHASE_DAY={aware:'Day 0',engage:'Day 2 to 3',convert:'Day 5',close:'Day 7 and after'};
+function placements(c,chans,t,coh){
+ const segs=effSegs(c),wt=k=>11-k;
+ return PLC.filter(p=>p.ch==='prog'||chans.has(p.ch)).map(p=>({...p,score:p.segs.filter(k=>segs.includes(k)).reduce((a,k)=>a+wt(k),0),hit:p.segs.filter(k=>segs.includes(k))})).filter(p=>p.score>0)
+  .sort((a,b)=>b.score-a.score).map(p=>({...p,detail:p.detail.replace(/\{t\}/g,t).replace(/\{c\}/g,coh||'the exam')}))}
+
+/* PLAN: three tracks */
+function buildPlan(c,ctx){
+ const ch=ctx.chans,t=ctx.tname,coh=ctx.coh,sub=x=>x.replace(/\{t\}/g,t).replace(/\{c\}/g,coh);
+ const pls=placements(c,ch,t,coh),segs=effSegs(c);
+ const pl=(phase,n,tr)=>pls.filter(p=>p.phase===phase&&p.ch!=='prog'&&p.hit.some(k=>TRACKS[tr].includes(k))&&['App','Website'].includes(p.asset)).slice(0,n).map(p=>p.surface);
+ const waC=ch.has('wa')?'WhatsApp':ch.has('sms')?'SMS':ch.has('email')?'Email':'Push notification';
+ const callC=ch.has('calls')?'AI calling (use IVR if the list is above 5,000)':ch.has('sms')?'SMS and email':'Email';
+ const closeC=ch.has('calls')?'Counsellor call':(ch.has('wa')?'WhatsApp reminder':'SMS');
+ const lastC=[ch.has('sms')&&'SMS',ch.has('push')&&'Push notification',!ch.has('sms')&&!ch.has('push')&&ch.has('email')&&'Email'].filter(Boolean);
+ const aw=tr=>{const o=[];if(tr==='nurt'&&ch.has('teacher'))o.push('Teacher promotion on PW and category channels');if(ch.has('paid'))o.push('Paid retargeting on YouTube and Meta (uploaded audience)');const p=pl('aware',2,tr);if(ch.has('inapp')&&p.length)o.push('In-app: '+p.join(' and '));if(!o.length&&ch.has('email'))o.push('Email');return o};
+ const en=tr=>{const o=[];if(ch.has('push'))o.push('Push notification (deep link)');const p=pl('engage',2,tr);if(ch.has('inapp')&&p.length)o.push('In-app: '+p.join(' and '));if(!o.length&&ch.has('email'))o.push('Email');return o};
+ const fastCh=[ch.has('wa')?'WhatsApp':ch.has('sms')?'SMS':null,ch.has('push')?'Push notification':null,ch.has('inapp')?'In-app modal on next open':null].filter(Boolean);
+ const fastCall=ch.has('calls')?'Counsellor call':(ch.has('sms')?'SMS':'Email');
+ const xv=sub('Paid learners and cross-category users: introduce {t} as the natural next step after the batch they study.');
+ const F=[
+  {id:'f1',day:0,phase:'Reach out now',channels:fastCh,who:'Payment failed, reached payment, or lead-form users who have not bought.',exclude:'Anyone who bought that batch.',msg:sub('You are one step away from joining {t}. Complete in one tap with UPI or EMI.'),kpi:'Users return to the payment page.',fix:'If few return, check that the link opens the payment page directly.'},
+  {id:'f2',day:1,phase:'Call',channels:[fastCall],who:'Same users, still not bought.',exclude:'Anyone who bought; do-not-call numbers.',msg:'Resolve doubts on fee, EMI and syllabus, then send the payment link on WhatsApp.',kpi:'Calls connect.',fix:'Call between 6 and 9 pm and retry once.'},
+  {id:'f3',day:3,phase:'Last reminder',channels:[...new Set([ch.has('sms')?'SMS':waC,ch.has('wa')?'WhatsApp':null].filter(Boolean))],who:'Same users, still not bought.',exclude:'Anyone who bought.',msg:sub('Seats closing or offer ending for {t}.'),kpi:'Final push.',fix:'Move non-buyers to the nurture list for 14 days.'}];
+ const S=[
+  {id:'s1',day:0,phase:'Awareness',channels:aw('std'),who:'Repeat and single-visit viewers, free learners, paid learners with new interest, cross-category users.',exclude:'Fast-track users; anyone who bought.',msg:sub('Show why {t} works: results, faculty and seat status.'),kpi:'Reach the whole list, 2 to 3 views per user.',fix:'If the paid match rate is under 40%, upload phone and email.'},
+  {id:'s2',day:3,phase:'Engage',channels:en('std'),who:'Everyone in this track who has not bought.',exclude:'Anyone who bought since Day 0.',msg:sub('Pick up where you left. {t} is waiting.')+' '+xv,kpi:'Clicks on the push or in-app message.',fix:'Few clicks? Change the creative or move to a busier placement before Day 5.'},
+  {id:'s3a',day:5,phase:'Convert',channels:[waC],who:'Clicked any notification, popup or banner since Day 0, and has not bought.',exclude:'Anyone who bought; non-clickers (they get the call).',msg:sub('Seats and offer with a one-tap link to {t}. The bot answers fee and EMI questions.'),kpi:'WhatsApp clicks lead to the payment page.',fix:'High clicks but few sales? Check the payment page and offer.',branch:'clicked'},
+  {id:'s3b',day:5,phase:'Reach',channels:[callC],who:'No click since Day 0, and has not bought.',exclude:'Anyone who bought; clickers (they get WhatsApp).',msg:'Short call: answer doubts and, if interested, send the link on WhatsApp. Use your calling vendor report for interested users.',kpi:'Calls connect and users show interest.',fix:'Low connect rate: call 6 to 9 pm and retry once.',branch:'noclick'},
+  {id:'s4',day:7,phase:'Close',channels:[closeC],who:'Reached payment or Buy Now after Day 0, and has not bought.',exclude:'Anyone who bought; do-not-call numbers.',msg:'Counsellor closes with fee, EMI and batch-fit advice.',kpi:'Work the Hot tier first, within 24 hours.',fix:'If volume is too high, prioritise by score.'},
+  {id:'s5',day:9,phase:'Last call',channels:lastC.length?lastC:[waC],who:'Clicked or viewed the batch since Day 0, and has not bought.',exclude:'Anyone who bought; no-activity users (exit to nurture list).',msg:sub('Seats closing or offer ending for {t}.'),kpi:'Final push.',fix:'Stop contacting non-engaged users for 14 days.'}];
+ const N=[
+  {id:'n1',day:0,phase:'Awareness',channels:aw('nurt'),who:'Cohort explorers and idle sign-ups.',exclude:'Anyone who bought.',msg:sub('Find the right batch for {c}. Start with a free class and a look at {t}.'),kpi:'Reach the list.',fix:'Lead with a teacher video, not a price.'},
+  {id:'n2',day:2,phase:'Engage',channels:en('nurt'),who:'Everyone in this track who has not bought.',exclude:'Anyone who bought.',msg:sub('Top batches for {c}, picked for you. See {t}.'),kpi:'Clicks to a batch page.',fix:'Few clicks? Try the Cohorts or Batchlists placement.'},
+  {id:'n3a',day:4,phase:'Convert',channels:[waC],who:'Clicked since Day 0, not bought.',exclude:'Anyone who bought; non-clickers.',msg:sub('Free demo class or masterclass for {c}, with a one-tap link to {t}.'),kpi:'Demo or masterclass sign-ups.',fix:'Low sign-ups? Shorten the form.',branch:'clicked'},
+  {id:'n3b',day:4,phase:'Reach',channels:[callC],who:'No click since Day 0, not bought.',exclude:'Anyone who bought; clickers.',msg:'Friendly call: understand their exam and suggest a free class or batch.',kpi:'Connect and interest.',fix:'Retry once in the evening.',branch:'noclick'},
+  {id:'n4',day:7,phase:'Programs',channels:[ch.has('wa')?'WhatsApp and push':'Push notification'],who:'Viewed or clicked since Day 0, not bought.',exclude:'Anyone who bought.',msg:sub('Invite to a {c} masterclass or scholarship test, then show {t}.'),kpi:'Attendance.',fix:'Send a replay link to no-shows.'},
+  {id:'n5',day:10,phase:'First offer',channels:[ch.has('sms')?'SMS':'Email'],who:'Attended or clicked, not bought.',exclude:'Anyone who bought; no-activity users.',msg:sub('First offer on {t}.'),kpi:'Enrolments.',fix:'Stop contacting non-engaged users for 14 days.'}];
+ const defs=[['fast','Fast track: Payment failed, reached payment, lead-form raisers','Closest to buying. Skip awareness and reach out immediately.',F],['std','Standard track: Viewers, free learners, paid learners with new interest, cross-category','Awareness first, then engage, then split by who clicked.',S],['nurt','Nurture track: Cohort explorers and idle sign-ups','Discovery first. Free class and masterclass before the sale.',N]];
+ const tr=defs.filter(d=>TRACKS[d[0]].some(k=>segs.includes(k))).map(d=>({id:d[0],name:d[1],desc:d[2],steps:d[3].filter(x=>x.channels.length)}));
+ tr.forEach(t=>t.steps.forEach(s=>{s.track=t.id;s.date=ctx.start?addDays(ctx.start,s.day):null;s.where=pls.filter(p=>p.hit.some(k=>TRACKS[t.id].includes(k))&&((s.phase==='Awareness'&&p.phase==='aware')||(s.phase==='Engage'&&p.phase==='engage')||(['Convert','Reach out now'].includes(s.phase)&&p.phase==='convert')||(['Close','Call'].includes(s.phase)&&p.phase==='close'))).slice(0,3).map(p=>p.surface)}));
+ return{tracks:tr,pls}}
+
+/* FORM */
+let RES=null,COUNTS=null,SQLMODE='list';
+function readCfg(){
+ const v=id=>$('#'+id).value.trim(),ck=id=>$('#'+id).checked;
+ const segs=Object.keys(SEG).map(Number).filter(k=>ck('sg'+k));
+ return{target:v('b_target'),cohort:v('b_cohort'),ckw:v('a_ckw'),days:+v('a_win')||14,hist:+v('a_hist')||60,lift:+v('a_lift')||2,sup:+v('a_sup')||20,segs:segs.length?segs:Object.keys(SEG).map(Number),cross:ck('sg8'),
+  perSeg:+v('a_per')||0,cap:+v('a_cap')||0,contact:v('a_contact')==='1',outcols:v('a_out'),custom:$('#a_custom').value,start:v('b_start'),
+  chans:$$('#chans input:checked').map(x=>x.value)}}
+const cfgRun=c=>Object.assign({},c,{chans:new Set(c.chans)});
+function buildAll(){
+ const c=readCfg();
+ if(!activeKeys(DB,'int').length||!activeKeys(DB,'buy').length){$('#reqHint').innerHTML='<span style="color:var(--rd)">Enable at least one behaviour event and one purchase event in the Data map.</span>';return}
+ $('#reqHint').textContent='';if(!c.start){c.start=iso(new Date());$('#b_start').value=c.start}
+ COUNTS=null;const r=cfgRun(c),manual=isManual(r),t=parseTargets(c.target),ci=cohortInfo(c);
+ const tname=manual?(t.kws[0]||(t.ids.length+' batches')):'[batch name]';
+ const ctx={chans:r.chans,start:c.start,tname,coh:ci?ci[1]:(manual?'the exam':'[exam]')};
+ RES={c,r,manual,ctx,tname,plan:buildPlan(r,ctx),sql:{},cache:{}};regen();renderResult()}
+function regen(){const {r}=RES;RES.sql={list:audienceSQL(r,DB,'list'),breakdown:audienceSQL(r,DB,'breakdown'),products:audienceSQL(r,DB,'products')};if(RES.manual)RES.sql.insights=audienceSQL(r,DB,'insights');RES.cache={}}
+const getStep=id=>RES.cache[id]||(RES.cache[id]=stepSQL(RES.r,DB,id));
+
+/* RESULT */
+const CK=['Intent depth','Repeat visits','Time spent (estimated)','Recent trend','Cross-category affinity','Persona'];
+function renderResult(){
+ const {c,r,plan,manual}=RES,ci=cohortInfo(c);
+ const mode=manual?`Product: ${esc(c.target)}`:'Auto: best audience across all PW products';
+ let h=`<div class="card"><div class="row" style="justify-content:space-between"><div><div style="font-size:19px;font-weight:700;letter-spacing:-.01em">Your campaign segment</div><div class="hint" style="margin:2px 0 0">${mode}${ci?' · '+esc(ci[1]):''}</div></div><button class="btn" id="saveBtn">Save to My plans</button></div></div>`;
+ h+=`<div class="card"><h2><span class="num">A</span>Audience mix: the full funnel, who is in and who is out</h2><div class="sig">${CK.map(x=>`<span>${x}</span>`).join('')}</div>
+  <div class="fun"><span class="st">Sign-up</span><span class="ar">→</span><span class="st">Explore</span><span class="ar">→</span><span class="st">Interest</span><span class="ar">→</span><span class="st">Intent</span><span class="ar">→</span><span class="st">Failed payment</span><span class="ar">·</span><span class="st">Free learner</span><span class="ar">·</span><span class="st">Cross-sell</span></div>
+  <div id="mix"></div>
+  <div class="gx"><div class="ge"><h4>Excluded for everyone</h4><ul id="exg"></ul></div><div class="go"><h4>Also build outside the database</h4><ul>${OUTSIDE.map(o=>`<li><span><b>${esc(o[0])}.</b> ${esc(o[1])} <span class="hint" style="display:block;margin:0">${esc(o[2])}</span></span></li>`).join('')}</ul></div></div>
+  <div class="row" style="margin-top:16px"><div class="sg" id="sseg"><button class="on" data-s="list">Segment query (run this one)</button><button data-s="breakdown">Optional: counts by segment</button><button data-s="products">Optional: products in the audience</button>${manual?'<button data-s="insights">Optional: cross-category insight</button>':''}</div><button class="btn sm" id="cpSql">Copy query</button><button class="btn sm ghost" id="dlSql">Download</button></div>
+  <pre class="sql" id="sqlBox">${esc(RES.sql.list)}</pre><p class="hint" id="sqlHint"></p>
+  <p class="hint">Metabase error? Open <b>Data map</b> at the top right and run the check query there. It names the table that is missing.</p>
+  <div style="margin-top:14px"><label class="l">Optional: run “counts by segment”, paste the result here to see real numbers <em>(label and users per row)</em></label><textarea id="pasteBD" placeholder="included  Payment failed  240&#10;excluded  Already bought the batch (paid)  1,120"></textarea><div class="row" style="margin-top:6px"><button class="btn sm" id="applyBD">Show numbers</button><span class="hint" id="bdMsg"></span></div></div></div>`;
+ h+=`<div class="card"><h2><span class="num">B</span>Journey</h2>${planHTML()}</div>`;
+ h+=`<div class="card"><h2><span class="num">C</span>Where to place it on PW assets</h2>${placeHTML()}</div>`;
+ $('#result').innerHTML=h;
+ const hints={list:'One query, one result. Each row is a user with the batch to pitch (batchname), segment, tier, score, persona, trend, time on product, why, and campaign_segment. Download the result from Metabase as CSV for your campaign tool. Copy the query exactly as shown, with no quotation marks.',breakdown:'Optional. Counts users per segment and shows how many each exclusion removed. Paste the result below.',products:'Optional. Shows which batches the audience is interested in, by segment. Use it to decide which products to pitch.',insights:'Optional. Shows which other batches have audiences that behave like buyers of your product.'};
+ SQLMODE='list';$('#sqlHint').textContent=hints.list;
+ $$('#sseg button').forEach(b=>b.onclick=()=>{$$('#sseg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');SQLMODE=b.dataset.s;$('#sqlBox').textContent=RES.sql[SQLMODE];$('#sqlHint').textContent=hints[SQLMODE]});
+ $('#cpSql').onclick=()=>copy($('#sqlBox').textContent,$('#cpSql'));$('#dlSql').onclick=()=>dl($('#sqlBox').textContent,`segment_${SQLMODE}.sql`);
+ $('#applyBD').onclick=applyBreakdown;$('#saveBtn').onclick=savePlan;
+ $$('details[data-sid]').forEach(d=>d.addEventListener('toggle',()=>{if(d.open){const pre=d.querySelector('pre');if(!pre.textContent)pre.textContent=getStep(d.dataset.sid)}}));
+ $$('[data-cp]').forEach(b=>b.onclick=()=>copy(getStep(b.dataset.cp),b));
+ drawMix();$('#result').scrollIntoView({behavior:'smooth'})}
+function dl(t,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download=name;a.click()}
+function copy(t,btn){const done=()=>{if(btn){const o=btn.textContent;btn.textContent='Copied';setTimeout(()=>btn.textContent=o,1200)}};
+ const fb=()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}ta.remove();done()};
+ if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done,fb);else fb()}
+function drawMix(){
+ const {c,r,manual}=RES,segs=effSegs(r),cn=COUNTS,max=cn?Math.max(1,...Object.values(cn)):1;
+ $('#mix').innerHTML=Object.keys(SEG).map(Number).map(k=>{const s=SEG[k],on=segs.includes(k),n=cn&&cn[s.label]!=null?cn[s.label]:null,why=!on?(k===8&&!manual?'Needs product details':(k>=9&&!c.cohort?'Needs a cohort':'Switched off')):'';
+  return `<div class="seg ${on?'':'off'}"><div class="no">${k}</div><div class="bd"><div class="hd"><b>${esc(s.label)}</b><span class="tag">${esc(s.stage)}</span>${k>=7&&k<=8?'<span class="tag p">Cross-category</span>':''}${why?`<span class="tag r">${why}</span>`:''}${n!=null?`<span class="cnt">${fmtN(n)}</span>`:''}</div>
+  <div class="iex"><div class="i"><b>Included</b>${esc(s.inc)}</div><div class="e"><b>Excluded</b>${esc(s.exc)}</div></div>
+  <div class="hint">First touch: ${esc(s.touch)}</div>${n!=null?`<div class="bar"><i style="width:${Math.round(n/max*100)}%"></i></div>`:''}</div></div>`}).join('');
+ const g=[[EXL.bought,'Paid for the batch they are interested in (last 365 days)'],[EXL.contact,c.contact?'Users with no phone and no email':'Not applied'],[EXL.off,'Segments you switched off'],[EXL.nosig,'Active in the funnel but not interested in any batch'],['Appears once','Each user is counted in the first segment that fits, with one recommended batch']];
+ $('#exg').innerHTML=g.map(([l,d])=>{const n=cn&&cn[l]!=null?`<span class="n">${fmtN(cn[l])}</span>`:'';return `<li><span><b>${esc(l)}.</b> ${esc(d)}</span>${n}</li>`}).join('')}
+function applyBreakdown(){
+ const txt=$('#pasteBD').value,cn={},labels=[...Object.values(SEG).map(s=>s.label),...Object.values(EXL)];
+ txt.split(/\n/).forEach(line=>{const l=line.toLowerCase();labels.forEach(lb=>{if(l.includes(lb.toLowerCase())){const m=line.replace(/,/g,'').match(/(\d+)\s*$/);if(m)cn[lb]=+m[1]}})});
+ if(!Object.keys(cn).length){$('#bdMsg').textContent='Could not find any rows. Paste the result grid including the labels.';return}
+ COUNTS=cn;$('#bdMsg').textContent='Numbers added.';drawMix()}
+function stepCard(s,cls){return `<div class="js ${cls||''}"><div class="jh"><span class="day">Day ${s.day}${s.date?' · '+fmtD(s.date):''}</span><span class="ph">${esc(s.phase)}</span>${s.branch==='clicked'?'<span class="tag">IF clicked</span>':s.branch==='noclick'?'<span class="tag">IF no click</span>':''}</div>
+ <div>${s.channels.map(x=>`<span class="tag">${esc(x)}</span> `).join('')}</div>
+ <dl class="dl" style="margin-top:8px"><dt>Who gets it</dt><dd>${esc(s.who)}</dd><dt>Excluded</dt><dd>${esc(s.exclude)}</dd><dt>Message</dt><dd>${esc(s.msg)}</dd>${s.where&&s.where.length?`<dt>Place it on</dt><dd>${esc(s.where.join(', '))}</dd>`:''}<dt>Success</dt><dd>${esc(s.kpi)}</dd><dt>If below</dt><dd>${esc(s.fix)}</dd></dl>
+ <details class="sq" data-sid="${s.id}"><summary>SQL for this list</summary><div class="row" style="margin-top:6px"><button class="btn sm" data-cp="${s.id}">Copy</button></div><pre class="sql"></pre></details></div>`}
+function planHTML(){
+ const {plan,manual}=RES;let h=`<p class="hint" style="margin:0 0 4px">Each list below is a complete query: it rebuilds the audience, then keeps only the users for that step and removes anyone who bought since the start date.${manual?'':' In auto mode, messages use [batch name]: fill it from the batchname column.'}</p>`;
+ plan.tracks.forEach(t=>{const S={};t.steps.forEach(s=>S[s.id]=s);h+=`<div class="trk">${esc(t.name)}<small>${esc(t.desc)}</small></div>`;
+  if(t.id==='fast')h+=t.steps.map(s=>stepCard(s)).join('');
+  else{const sb=(s,cls)=>s?`<div class="sb ${cls||''}">${esc(s.phase)}<small>Day ${s.day} · ${esc(s.channels[0].split(' (')[0])}</small></div>`:'';
+   const ids=t.id==='std'?['s1','s2','s3a','s3b','s4','s5']:['n1','n2','n3a','n3b','n4','n5'];
+   h+=`<div class="strip">${sb(S[ids[0]])}<span class="ar2">→</span>${sb(S[ids[1]])}<span class="ar2">→</span><div class="sp2">${sb(S[ids[2]],'gd')}${sb(S[ids[3]],'rd')}</div><span class="ar2">→</span>${sb(S[ids[4]])}<span class="ar2">→</span>${sb(S[ids[5]])}</div>`;
+   h+=stepCard(S[ids[0]])+stepCard(S[ids[1]])+`<div class="lab">Day ${S[ids[2]].day}: split by behaviour</div><div class="split">${stepCard(S[ids[2]],'b1')}${stepCard(S[ids[3]],'b2')}</div><div style="height:10px"></div>`+stepCard(S[ids[4]])+stepCard(S[ids[5]])}});
+ return h}
+function placeHTML(){
+ const {plan}=RES,ASSETS=['App','Website','Paid media','Teachers and social','Calls and programs','Offline'];
+ let h='<div class="note"><b>Placement principle.</b> Use sequence ads and several points in the flow, orchestrated across platforms, so one user sees the same offer in more than one place.</div>';
+ ASSETS.forEach(a=>{const L=plan.pls.filter(p=>p.asset===a).slice(0,a==='App'?10:5);if(!L.length)return;
+  h+=`<div class="pa">${a}</div><div class="tbl"><table><tr><th>Where</th><th>Exactly what to do</th><th>For segments</th><th>When</th></tr>${L.map(p=>`<tr><td><b>${esc(p.surface)}</b><br><span class="hint" style="margin:0">${esc(p.group)}</span></td><td>${esc(p.detail)}</td><td>${p.hit.map(k=>`<span class="tag">${k}</span>`).join(' ')}</td><td style="white-space:nowrap">${PHASE_DAY[p.phase]}</td></tr>`).join('')}</table></div>`});
+ h+=`<p class="hint">Segment numbers match the audience mix above. Placements come from your Activities tab, ranked by the segments in this mix.</p>`;return h}
+
+/* MY PLANS: saves the settings and regenerates SQL on demand */
+let PLANS=store.get('pwax_plans5',[]),SEL=null;const savePlans=()=>store.set('pwax_plans5',PLANS);
+function savePlan(){
+ const {c,plan}=RES,id='p'+Date.now();
+ PLANS.unshift({id,name:`Segment: ${RES.manual?c.target:'Auto, all products'}`,start:c.start,actualN:'',cfg:c,steps:plan.tracks.flatMap(t=>t.steps.map(s=>({id:s.id,track:t.id==='fast'?'Fast':t.id==='std'?'Standard':'Nurture',day:s.day,phase:s.phase,channels:s.channels,who:s.who,where:s.where||[],actual:'',status:'Planned',note:''})))});
+ savePlans();SEL=id;$('#saveBtn').textContent='Saved. Open My plans';$('#saveBtn').onclick=()=>go('plan')}
+const planSQL=(p,id)=>{const r=cfgRun(Object.assign({},p.cfg,{start:p.start}));return ['list','breakdown','products','insights'].includes(id)?audienceSQL(r,DB,id):stepSQL(r,DB,id)};
+function renderPlans(){
+ if(!PLANS.length){$('#pBody').innerHTML='<div class="card"><b>No saved plans yet.</b><p class="hint">Build a segment, then click “Save to My plans”.</p><button class="btn" id="toB">Go to Build</button></div>';$('#toB').onclick=()=>go('build');return}
+ if(!SEL||!PLANS.find(p=>p.id===SEL))SEL=PLANS[0].id;
+ const p=PLANS.find(x=>x.id===SEL),prog=x=>{const d=x.steps.filter(s=>s.status==='Done'||s.status==='Skipped').length;return Math.round(d/x.steps.length*100)};
+ const act=p.steps.reduce((a,s)=>a+(+s.actual||0),0);
+ $('#pBody').innerHTML=`<div class="plan"><div>${PLANS.map(x=>`<div class="pl ${x.id===SEL?'on':''}" data-id="${x.id}"><b>${esc(x.name)}</b><small>${x.start?fmtD(x.start):''} · ${prog(x)}% done</small><div class="bar2"><i style="width:${prog(x)}%"></i></div></div>`).join('')}</div>
+ <div><div class="card"><div class="row" style="justify-content:space-between"><input type="text" id="pn" value="${esc(p.name)}" style="font-weight:700;font-size:16px;flex:1;min-width:200px"><div class="row noprint"><button class="btn sm ghost" id="pDup">Duplicate</button><button class="btn sm ghost" id="pPr">Print</button><button class="btn sm dng" id="pDel">Delete</button></div></div>
+ <div class="grid" style="margin-top:14px"><div><label class="l">Start date</label><input type="date" id="ps" value="${p.start}"></div><div><label class="l">Total enrolments achieved</label><input type="number" id="pA" value="${p.actualN}" placeholder="${act||''}"></div></div></div>
+ <div class="card"><div class="tbl"><table><tr><th>Date</th><th>Track</th><th>Step</th><th>Channels</th><th>Place it on</th><th>Enrolments</th><th>Status</th><th>Notes</th></tr>${p.steps.map((s,i)=>`<tr><td style="white-space:nowrap"><b>${fmtD(addDays(p.start,s.day))}</b><br><span class="hint">Day ${s.day}</span></td><td>${esc(s.track)}</td><td>${esc(s.phase)}</td><td>${s.channels.map(x=>`<span class="tag">${esc(x)}</span>`).join(' ')}</td><td>${esc((s.where||[]).join(', '))}</td>
+ <td><input class="inl" style="width:80px" type="number" data-i="${i}" data-k="actual" value="${s.actual}"></td><td><select class="inl" data-i="${i}" data-k="status">${['Planned','Live','Done','Skipped'].map(o=>`<option ${o===s.status?'selected':''}>${o}</option>`).join('')}</select></td><td><input class="inl" style="width:140px" type="text" data-i="${i}" data-k="note" value="${esc(s.note)}"></td></tr>`).join('')}</table></div></div>
+ <details class="pb"><summary>SQL for this plan</summary><div class="in"><div class="row" style="margin:8px 0"><button class="btn sm" data-q="list">Segment query</button><button class="btn sm" data-q="breakdown">Counts by segment</button><button class="btn sm" data-q="products">Products in the audience</button>${p.steps.map(s=>`<button class="btn sm ghost" data-q="${s.id}">${esc(s.track)}: ${esc(s.phase)}${/3a$/.test(s.id)?' (clicked)':/3b$/.test(s.id)?' (no click)':''}</button>`).join('')}</div></div></details></div></div>`;
+ $$('.pl').forEach(e=>e.onclick=()=>{SEL=e.dataset.id;renderPlans()});
+ $('#pn').onchange=e=>{p.name=e.target.value;savePlans();renderPlans()};$('#ps').onchange=e=>{p.start=e.target.value;savePlans();renderPlans()};$('#pA').onchange=e=>{p.actualN=e.target.value;savePlans()};
+ $$('#pBody [data-i]').forEach(e=>e.onchange=()=>{p.steps[+e.dataset.i][e.dataset.k]=e.value;savePlans();if(e.dataset.k!=='note')renderPlans()});
+ $$('#pBody [data-q]').forEach(b=>b.onclick=()=>copy(planSQL(p,b.dataset.q),b));
+ $('#pDup').onclick=()=>{const n=JSON.parse(JSON.stringify(p));n.id='p'+Date.now();n.name=p.name+' (copy)';PLANS.unshift(n);SEL=n.id;savePlans();renderPlans()};
+ $('#pDel').onclick=()=>{if(confirm('Delete this plan?')){PLANS=PLANS.filter(x=>x.id!==p.id);SEL=null;savePlans();renderPlans()}};
+ $('#pPr').onclick=()=>window.print()}
+$('#pExp').onclick=()=>dl(JSON.stringify(PLANS,null,2),'pw-ad-exchange-plans.json');
+$('#pImp').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const a=JSON.parse(r.result);if(Array.isArray(a)){a.forEach(x=>{if(!PLANS.find(p=>p.id===x.id))PLANS.push(x)});savePlans();renderPlans()}}catch(er){alert('Could not read that file.')}};r.readAsText(f)};
+
+/* DATA MAP */
+function saveDB(){store.set('pwax_db6',DB)}
+function renderDS(){
+ $('#dsGrid').innerHTML=DS_FIELDS.map(([k,l])=>`<div><label class="l">${l}</label><input type="text" data-ds="${k}" value="${esc(DB[k])}"></div>`).join('');
+ $('#dsEv').innerHTML=Object.keys(EVD).map(k=>{const e=DB.events[k];return `<div class="ev3"><input type="checkbox" data-eon="${k}" ${e.on?'checked':''}><span><b>${k}</b><br><span class="hint" style="margin:0">${esc(EVD[k].label)} · ${esc(EVD[k].stage)}</span></span><input type="text" data-etab="${k}" value="${esc(e.table)}"><input type="text" data-ebp="${k}" value="${esc(e.batch)}" placeholder="none"><input type="text" data-eco="${k}" value="${esc(e.cohort||'')}" placeholder="none"></div>`}).join('');
+ const upd=()=>{saveDB();$('#scA').textContent=checkSQL(DB)};
+ $$('[data-ds]').forEach(e=>e.onchange=()=>{DB[e.dataset.ds]=e.value.trim();upd()});
+ $$('[data-eon]').forEach(e=>e.onchange=()=>{DB.events[e.dataset.eon].on=e.checked?1:0;upd()});
+ $$('[data-etab]').forEach(e=>e.onchange=()=>{DB.events[e.dataset.etab].table=e.value.trim();upd()});
+ $$('[data-ebp]').forEach(e=>e.onchange=()=>{DB.events[e.dataset.ebp].batch=e.value.trim();upd()});
+ $$('[data-eco]').forEach(e=>e.onchange=()=>{DB.events[e.dataset.eco].cohort=e.value.trim();upd()});
+ $('#scA').textContent=checkSQL(DB)}
+
+/* WIRING */
+function go(v){$$('.view').forEach(x=>x.classList.remove('on'));$('#v-'+v).classList.add('on');$$('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));if(v==='plan')renderPlans();window.scrollTo(0,0)}
+function countBadge(){let n=0;$$('#morePanel [data-def]').forEach(e=>{const d=e.dataset.def,v=e.type==='checkbox'?(e.checked?'1':'0'):e.value;if(String(v)!==String(d))n++});const b=$('#badge');b.textContent=n+' changed';b.style.display=n?'inline-block':'none'}
+function modeHint(){const m=parseTargets($('#b_target').value);$('#modeHint').textContent=(m.ids.length||m.kws.length)?'Product mode: the audience is built for this product, including cross-category learning.':'Auto mode: best audience across all PW products, each user matched to the batch they are most interested in.'}
+function init(){
+ $('#b_cohort').innerHTML='<option value="">None: skip explorers and idle sign-ups</option>'+COHORTS.map(([k,l])=>`<option value="${k}">${l}</option>`).join('');
+ $('#segChecks').innerHTML=Object.keys(SEG).map(k=>`<label class="ck"><input type="checkbox" id="sg${k}" data-def="1" checked>${k}. ${SEG[k].label}</label>`).join('');
+ $('#chans').innerHTML=[['push','Push',1],['wa','WhatsApp',1],['sms','SMS',1],['email','Email',1],['inapp','In-app',1],['web','Website',1],['paid','Paid (YouTube, Meta)',1],['calls','Calls (IVR, AI, counsellor)',1],['teacher','Teacher promotion',1],['social','Telegram, Instagram',1],['offline','Books and delivery',0]].map(([k,l,d])=>`<label class="ck"><input type="checkbox" value="${k}" data-def="${d}" ${d?'checked':''}>${l}</label>`).join('');
+ $('#b_start').value=iso(new Date());
+ $('#moreBtn').onclick=()=>{$('#moreBtn').classList.toggle('open');$('#morePanel').classList.toggle('open')};
+ $('#morePanel').addEventListener('input',countBadge);$('#morePanel').addEventListener('change',countBadge);
+ $('#b_target').addEventListener('input',modeHint);
+ $('#buildBtn').onclick=buildAll;$$('#tabs button').forEach(b=>b.onclick=()=>go(b.dataset.v));
+ $('#dsBtn').onclick=()=>$('#dsPanel').classList.toggle('hide');$('#dsClose').onclick=()=>$('#dsPanel').classList.add('hide');
+ $('#cpA').onclick=()=>copy($('#scA').textContent,$('#cpA'));$('#resetDS').onclick=()=>{DB=Object.assign({},DB0);DB.events=defEvents(DB.evPattern);saveDB();renderDS();$('#scMsg').textContent='Reset to defaults.'};
+ renderDS()}
+init();
+
+</script>
+</body>
+</html>
