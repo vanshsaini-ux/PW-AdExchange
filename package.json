@@ -1,0 +1,9 @@
+{
+  "name": "pw-ad-exchange-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PW Ad Exchange Studio: builds a full-funnel audience mix as one SQL query, plus journey and placement plan. Static app, no build step.",
+  "scripts": {
+    "start": "npx serve ."
+  }
+}
